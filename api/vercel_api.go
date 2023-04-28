@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	Server *gin.Engine
-	client *openai.Client
+	Server  *gin.Engine
+	clients = make(map[string]*openai.Client, 0)
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -18,9 +18,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func init() {
-	Server = gin.Default()
+	Server = gin.New()
 	group := Server.Group("/api")
-	group.POST("/http/open-ai", HttpOpenAI)
+	group.POST("/open-ai", HttpOpenAI)
 }
 
 func HttpOpenAI(c *gin.Context) {
@@ -30,11 +30,16 @@ func HttpOpenAI(c *gin.Context) {
 	key := in["key"]
 	if key == "" {
 		c.Writer.WriteString("无效请求")
+		c.Writer.Flush()
 		return
 	}
+
+	client := clients[key]
 	if client == nil {
 		client = openai.NewClient(key)
+		clients[key] = client
 	}
+
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
@@ -52,4 +57,5 @@ func HttpOpenAI(c *gin.Context) {
 		return
 	}
 	c.Writer.WriteString(resp.Choices[0].Message.Content)
+	c.Writer.Flush()
 }
