@@ -1,0 +1,8 @@
+{
+  "routes": [
+    {
+      "src": "/api/vercel",
+      "dest": "/api/vercel_api.go"
+    }
+  ]
+}

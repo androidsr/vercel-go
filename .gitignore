@@ -1,0 +1,6 @@
+/vercel-go
+/cache/
+/vendor/
+vercel-go.exe
+vercel-go.exe~
+.idea
