@@ -1,10 +1,28 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
+
+	"github.com/gin-contrib/static"
+	"github.com/gin-gonic/gin"
+)
+
+var (
+	server *gin.Engine
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h1>Hello from Go!</h1>")
+	server.ServeHTTP(w, r)
+}
+
+func NewRouter() {
+	server = gin.Default()
+	server.Use(static.Serve("/", static.LocalFile("ui", false)))
+	group := server.Group("/api")
+	group.GET("/hello", HelloWord)
+}
+
+func HelloWord(c *gin.Context) {
+	c.Writer.WriteString("Hello Word!!!")
+
 }
