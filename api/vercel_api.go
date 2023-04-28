@@ -53,7 +53,7 @@ func HttpOpenAI(c *gin.Context) {
 		},
 	)
 	if err != nil {
-		c.Writer.WriteString(err.Error())
+		c.Writer.WriteString("GPT异常：" + err.Error())
 		return
 	}
 	c.Writer.WriteString(resp.Choices[0].Message.Content)
