@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -26,8 +25,7 @@ func init() {
 }
 
 func HelloWord(c *gin.Context) {
-	pwd, _ := os.Getwd()
-	fileInfoList, err := ioutil.ReadDir(pwd)
+	fileInfoList, err := ioutil.ReadDir("/")
 	if err != nil {
 		log.Fatal(err)
 	}
