@@ -1,16 +1,16 @@
 package api
 
 import (
-	"io/ioutil"
-	"log"
+	"context"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
+	openai "github.com/sashabaranov/go-openai"
 )
 
 var (
 	server *gin.Engine
+	client = openai.NewClient("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")
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -19,19 +19,34 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	server = gin.Default()
-	//server.StaticFS("/", http.Dir("/public"))
 	group := server.Group("/api")
-	group.GET("/hello", HelloWord)
+	group.GET("/http/open-ai", HttpOpenAI)
 }
 
-func HelloWord(c *gin.Context) {
-	fileInfoList, err := ioutil.ReadDir("/")
+func HttpOpenAI(c *gin.Context) {
+	in := make(map[string]string, 0)
+	c.BindJSON(&in)
+	message := in["message"]
+	key := in["key"]
+	if key != "04F817D619C5A41F5D67CCACC4BB41F7" {
+		c.Writer.WriteString("无效请求")
+		return
+	}
+	resp, err := client.CreateChatCompletion(
+		context.Background(),
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: message,
+				},
+			},
+		},
+	)
 	if err != nil {
-		log.Fatal(err)
+		c.Writer.WriteString(err.Error())
+		return
 	}
-	list := make([]string, 0)
-	for i := range fileInfoList {
-		list = append(list, fileInfoList[i].Name())
-	}
-	c.Writer.WriteString(strings.Join(list, ","))
+	c.Writer.WriteString(resp.Choices[0].Message.Content)
 }

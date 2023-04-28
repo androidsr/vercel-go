@@ -3,8 +3,8 @@ module vercel-go
 go 1.19
 
 require (
-	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.9.0
+	github.com/sashabaranov/go-openai v1.9.0
 )
 
 require (
