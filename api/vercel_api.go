@@ -17,7 +17,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	server = gin.Default()
-	server.Use(static.Serve("/ui", static.LocalFile("./ui", false)))
+	server.Use(static.Serve("/ui", static.LocalFile("public/ui", false)))
 	group := server.Group("/api")
 	group.GET("/hello", HelloWord)
 }
