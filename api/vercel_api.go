@@ -15,7 +15,7 @@ var (
 	server *gin.Engine
 )
 
-//go:embed ui/* ui/*/*
+//go:embed ui
 var fs embed.FS
 
 func Handler(w http.ResponseWriter, r *http.Request) {
