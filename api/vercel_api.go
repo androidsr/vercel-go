@@ -1,13 +1,13 @@
 package api
 
 import (
+	"embed"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,13 +15,16 @@ var (
 	server *gin.Engine
 )
 
+//go:embed ui/* ui/*/*
+var fs embed.FS
+
 func Handler(w http.ResponseWriter, r *http.Request) {
 	server.ServeHTTP(w, r)
 }
 
 func init() {
 	server = gin.Default()
-	server.Use(static.Serve("/ui", static.LocalFile("/ui", false)))
+	server.StaticFS("/", http.FS(fs))
 	group := server.Group("/api")
 	group.GET("/hello", HelloWord)
 }
