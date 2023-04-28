@@ -15,7 +15,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	server.ServeHTTP(w, r)
 }
 
-func NewRouter() {
+func init() {
 	server = gin.Default()
 	server.Use(static.Serve("/", static.LocalFile("ui", false)))
 	group := server.Group("/api")
