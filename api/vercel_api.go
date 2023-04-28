@@ -10,7 +10,7 @@ import (
 
 var (
 	Server *gin.Engine
-	//clients = make(map[string]*openai.Client, 0)
+	client *openai.Client
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -32,8 +32,9 @@ func HttpOpenAI(c *gin.Context) {
 		c.Writer.WriteString("无效请求")
 		return
 	}
-
-	client := openai.NewClient(key)
+	if client == nil {
+		client = openai.NewClient(key)
+	}
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
