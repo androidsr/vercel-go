@@ -9,17 +9,17 @@ import (
 )
 
 var (
-	server  *gin.Engine
-	clients = make(map[string]*openai.Client, 0)
+	Server *gin.Engine
+	//clients = make(map[string]*openai.Client, 0)
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	server.ServeHTTP(w, r)
+	Server.ServeHTTP(w, r)
 }
 
 func init() {
-	server = gin.Default()
-	group := server.Group("/api")
+	Server = gin.Default()
+	group := Server.Group("/api")
 	group.POST("/http/open-ai", HttpOpenAI)
 }
 
@@ -32,11 +32,8 @@ func HttpOpenAI(c *gin.Context) {
 		c.Writer.WriteString("无效请求")
 		return
 	}
-	client := clients[key]
-	if client == nil {
-		client = openai.NewClient(key)
-		clients[key] = client
-	}
+
+	client := openai.NewClient(key)
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
