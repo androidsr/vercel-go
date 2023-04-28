@@ -20,7 +20,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	server = gin.Default()
-	server.StaticFS("/", http.Dir("/public"))
+	//server.StaticFS("/", http.Dir("/public"))
 	group := server.Group("/api")
 	group.GET("/hello", HelloWord)
 }
