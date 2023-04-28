@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -56,6 +57,8 @@ func HttpOpenAI(c *gin.Context) {
 		c.Writer.WriteString("GPT异常：" + err.Error())
 		return
 	}
-	c.Writer.WriteString(resp.Choices[0].Message.Content)
-	c.Writer.Flush()
+	c.Writer.WriteString("响应结果：")
+	text := resp.Choices[0].Message.Content
+	fmt.Println(text)
+	c.Writer.WriteString(text)
 }
