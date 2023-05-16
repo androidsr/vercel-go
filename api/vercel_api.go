@@ -24,8 +24,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	Server = gin.New()
-	group := Server.Group("/api")
-	group.POST("/open-ai", HttpOpenAI)
+
 	socket := wsocket.New(websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			return true
@@ -33,12 +32,16 @@ func init() {
 	}, time.Second*60, 3, func(w http.ResponseWriter, r *http.Request) string {
 		return "sirui"
 	})
-	group.GET("/ws", func(c *gin.Context) {
+	Server.GET("/ws", func(c *gin.Context) {
 		err := socket.Register(c.Writer, c.Request)
 		if err != nil {
 			c.JSON(http.StatusOK, model.NewFail(5000, err.Error()))
 		}
 	})
+
+	group := Server.Group("/api")
+	group.POST("/open-ai", HttpOpenAI)
+
 }
 
 func HttpOpenAI(c *gin.Context) {
